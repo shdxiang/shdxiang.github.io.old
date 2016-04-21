@@ -16,7 +16,7 @@
   <div class="container-fluid">
     <div class="row">
       <div class="col-md-2 col-sm-0"></div>
-      <div class="col-md-8 col-sm-12">扫描二维码：</div>
+      <div class="col-md-8 col-sm-12"><!--扫描二维码：--></div>
       <div class="col-md-2 col-sm-0"></div>
     </div>
     <div class="row">
@@ -190,6 +190,7 @@ function create_demo() {
   demo = Sketch.create({
     container: document.getElementById('cv'),
     fullscreen: false,
+    autopause: false,
     width: $('#cv').width(),
     height: $('#cv').height(),
   });
