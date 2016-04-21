@@ -1,197 +1,264 @@
 <!doctype html>
 <html>
-  <head>
-    <title>Particles</title>
-    <meta http-equiv=Content-Type content="text/html;charset=utf-8">
-    <link rel="stylesheet" href="http://cdn.bootcss.com/bootstrap/3.3.6/css/bootstrap.min.css">
-    <style type="text/css">
-      #cv {
-        background: #666666;
-        border-radius: 5px;
-        height: 786px;
-      }
-    </style>
-    <script src="https://cdn.bootcss.com/socket.io/1.4.5/socket.io.js"></script>
-    <script src="https://raw.githubusercontent.com/yunba/yunba-javascript-sdk/master/yunba-js-sdk.js"></script>
-    <script src="http://cdn.bootcss.com/jquery/2.2.1/jquery.min.js"></script>
-  </head>
-  <body>
-    <div class="container-fluid">
-      <div class="row">
-        <div class="col-md-1 col-sm-0"></div>
-        <div class="col-md-10 col-sm-12">扫描二维码：</div>
-        <div class="col-md-1 col-sm-0"></div>
-      </div>
-      <div class="row">
-        <div class="col-md-1 col-sm-0"></div>
-        <div class="col-md-10 col-sm-12">
-          <div id="cv"></div>
-        </div>
-        <div class="col-md-1 col-sm-0"></div>
-      </div>
+<head>
+  <title>Particles</title>
+  <meta http-equiv=Content-Type content="text/html;charset=utf-8">
+  <link rel="stylesheet" href="http://cdn.bootcss.com/bootstrap/3.3.6/css/bootstrap.min.css">
+  <style type="text/css">
+    #cv {
+      background: #DDDDDD;
+      border-radius: 3px;
+      height: 640px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-md-2 col-sm-0"></div>
+      <div class="col-md-8 col-sm-12">扫描二维码：</div>
+      <div class="col-md-2 col-sm-0"></div>
     </div>
+    <div class="row">
+      <div class="col-md-2 col-sm-0"></div>
+      <div class="col-md-8 col-sm-12">
+        <div id="cv"></div>
+      </div>
+      <div class="col-md-2 col-sm-0"></div>
+    </div>
+  </div>
 
-    <script src="js/sketch.js"></script>
-    <script>
-    
-    // ----------------------------------------
-    // Particle
-    // ----------------------------------------
+  <script src="https://cdn.bootcss.com/socket.io/1.4.5/socket.io.js"></script>
+  <script src="https://rawgit.com/yunba/yunba-javascript-sdk/master/yunba-js-sdk.js"></script>
+  <script src="http://cdn.bootcss.com/jquery/2.2.1/jquery.min.js"></script>
+  <script src="js/sketch.js"></script>
+  <script>
+// ----------------------------------------
+// Particle
+// ----------------------------------------
 
-    function Particle(x, y, radius) {
-      this.init(x, y, radius);
+function Particle(x, y, radius) {
+  this.init(x, y, radius);
+}
+
+Particle.prototype = {
+
+  init: function(x, y, radius) {
+
+    this.alive = true;
+
+    this.radius = radius || 10;
+    this.wander = 0.15;
+    this.theta = random(TWO_PI);
+    this.drag = 0.92;
+    this.color = '#fff';
+
+    this.x = x || 0.0;
+    this.y = y || 0.0;
+
+    this.vx = 0.0;
+    this.vy = 0.0;
+  },
+
+  move: function() {
+
+    this.x += this.vx;
+    this.y += this.vy;
+
+    this.vx *= this.drag;
+    this.vy *= this.drag;
+
+    this.theta += random(-0.5, 0.5) * this.wander;
+    this.vx += sin(this.theta) * 0.1;
+    this.vy += cos(this.theta) * 0.1;
+
+    this.radius *= 0.96;
+    this.alive = this.radius > 0.5;
+  },
+
+  draw: function(ctx) {
+
+    ctx.beginPath();
+    ctx.arc(this.x, this.y, this.radius, 0, TWO_PI);
+    ctx.fillStyle = this.color;
+    ctx.fill();
+  }
+};
+
+// ----------------------------------------
+// Example
+// ----------------------------------------
+var topic = 'particles';
+var yunba;
+
+var MAX_PARTICLES = 96;
+var COLOURS = ['#69D2E7', '#A7DBD8', '#E0E4CC', '#F38630', '#FA6900', '#FF4E50', '#F9D423'];
+
+var particles = [];
+
+var pool = [];
+var demo;
+
+function setup() {
+
+  // Set off some initial particles.
+  var i, x, y;
+
+  for (i = 0; i < 20; i++) {
+    x = (demo.width * 0.5) + random(-100, 100);
+    y = (demo.height * 0.5) + random(-100, 100);
+    demo.spawn(x, y);
+  }
+};
+
+function spawn(x, y) {
+
+  if (particles.length >= MAX_PARTICLES)
+    pool.push(particles.shift());
+
+  particle = pool.length ? pool.pop() : new Particle();
+  particle.init(x, y, random(5, 40));
+
+  particle.wander = random(0.5, 2.0);
+  particle.color = random(COLOURS);
+  particle.drag = random(0.9, 0.99);
+
+  theta = random(TWO_PI);
+  force = random(2, 8);
+
+  particle.vx = sin(theta) * force;
+  particle.vy = cos(theta) * force;
+
+  particles.push(particle);
+};
+
+function update() {
+
+  var i, particle;
+
+  for (i = particles.length - 1; i >= 0; i--) {
+
+    particle = particles[i];
+
+    if (particle.alive) particle.move();
+    else pool.push(particles.splice(i, 1)[0]);
+  }
+};
+
+function draw() {
+
+  demo.globalCompositeOperation = 'lighter';
+
+  for (var i = particles.length - 1; i >= 0; i--) {
+    particles[i].draw(demo);
+  }
+};
+
+function mousemove() {
+  var particle, theta, force, touch, max, i, j, n;
+  var xys = []
+
+  for (i = 0, n = demo.touches.length; i < n; i++) {
+    xys.push({
+      x: demo.touches[i].x,
+      y: demo.touches[i].y
+    })
+  }
+
+  //console.log(JSON.stringify(xys));
+  yunba.publish({
+      topic: topic,
+      msg: JSON.stringify(xys)
+    },
+    function(success, msg) {
+      if (!success) {
+        console.log(msg);
+      }
     }
+  );
+  return;
+  for (i = 0, n = demo.touches.length; i < n; i++) {
 
-    Particle.prototype = {
-
-      init: function(x, y, radius) {
-
-        this.alive = true;
-
-        this.radius = radius || 10;
-        this.wander = 0.15;
-        this.theta = random(TWO_PI);
-        this.drag = 0.92;
-        this.color = '#fff';
-
-        this.x = x || 0.0;
-        this.y = y || 0.0;
-
-        this.vx = 0.0;
-        this.vy = 0.0;
-      },
-
-      move: function() {
-
-        this.x += this.vx;
-        this.y += this.vy;
-
-        this.vx *= this.drag;
-        this.vy *= this.drag;
-
-        this.theta += random(-0.5, 0.5) * this.wander;
-        this.vx += sin(this.theta) * 0.1;
-        this.vy += cos(this.theta) * 0.1;
-
-        this.radius *= 0.96;
-        this.alive = this.radius > 0.5;
-      },
-
-      draw: function(ctx) {
-
-        ctx.beginPath();
-        ctx.arc(this.x, this.y, this.radius, 0, TWO_PI);
-        ctx.fillStyle = this.color;
-        ctx.fill();
-      }
-    };
-
-    // ----------------------------------------
-    // Example
-    // ----------------------------------------
-
-    var MAX_PARTICLES = 280;
-    var COLOURS = [ '#69D2E7', '#A7DBD8', '#E0E4CC', '#F38630', '#FA6900', '#FF4E50', '#F9D423' ];
-
-    var particles = [];
-    var pool = [];
-
-    var pool = [];
-    var demo;
-
-    function setup() {
-
-      // Set off some initial particles.
-      var i, x, y;
-
-      for (i = 0; i < 20; i++) {
-        x = (demo.width * 0.5) + random(-100, 100);
-        y = (demo.height * 0.5) + random(-100, 100);
-        demo.spawn(x, y);
-      }
-    };
-
-    function spawn(x, y) {
-
-      if (particles.length >= MAX_PARTICLES)
-        pool.push(particles.shift());
-
-      particle = pool.length ? pool.pop() : new Particle();
-      particle.init(x, y, random(5, 40));
-
-      particle.wander = random(0.5, 2.0);
-      particle.color = random(COLOURS);
-      particle.drag = random(0.9, 0.99);
-
-      theta = random(TWO_PI);
-      force = random(2, 8);
-
-      particle.vx = sin(theta) * force;
-      particle.vy = cos(theta) * force;
-
-      particles.push(particle);
-    };
-
-    function update() {
-
-      var i, particle;
-
-      for (i = particles.length - 1; i >= 0; i--) {
-
-        particle = particles[i];
-
-        if (particle.alive) particle.move();
-        else pool.push(particles.splice(i, 1)[0]);
-      }
-    };
-
-    function draw() {
-
-      demo.globalCompositeOperation  = 'lighter';
-
-      for (var i = particles.length - 1; i >= 0; i--) {
-        particles[i].draw(demo);
-      }
-    };
-
-    function mousemove() {
-
-      var particle, theta, force, touch, max, i, j, n;
-
-      for (i = 0, n = demo.touches.length; i < n; i++) {
-
-        touch = demo.touches[i], max = random(1, 4);
-        for (j = 0; j < max; j++) {
-          demo.spawn(touch.x, touch.y);
-        }
-
-      }
-    };
-
-    function create() {
-      demo = Sketch.create({
-        container: document.getElementById('cv'),
-        fullscreen: false,
-        width: $('#cv').width(),
-        height: $('#cv').height(),
-      });
-      demo.setup = setup;
-      demo.spawn = spawn;
-      demo.update = update;
-      demo.draw = draw;
-      demo.mousemove = mousemove;
+    touch = demo.touches[i], max = random(1, 4);
+    for (j = 0; j < max; j++) {
+      demo.spawn(touch.x, touch.y);
     }
+  }
+};
 
-    $(window).resize(function() {
-      if (demo) {
-        demo.destroy();
-      }
-      create();
-    });
+function create_demo() {
+  demo = Sketch.create({
+    container: document.getElementById('cv'),
+    fullscreen: false,
+    width: $('#cv').width(),
+    height: $('#cv').height(),
+  });
+  demo.setup = setup;
+  demo.spawn = spawn;
+  demo.update = update;
+  demo.draw = draw;
+  demo.mousemove = mousemove;
+}
 
-    create();
+$(window).resize(function() {
+  if (demo) {
+    demo.destroy();
+  }
+  create_demo();
+});
 
-    </script>
-  </body>
+function process_data(data) {
+  // console.log(data.msg);
+  var xys = JSON.parse(data.msg);
+  for (var i = 0; i < xys.length; i++) {
+    max = random(1, 4);
+    for (var j = 0; j < max; j++) {
+      demo.spawn(xys[i].x, xys[i].y);
+    }
+  }
+}
+
+function init_yunba() {
+  yunba = new Yunba({
+    server: 'sock.yunba.io',
+    port: 3000,
+    appkey: '5697113d4407a3cd028abead'
+  });
+
+  yunba.init(function(success) {
+    if (success) {
+      var cid = Math.random().toString().substr(2);
+      console.log('cid: ' + cid);
+      yunba.connect_by_customid(cid,
+        function(success, msg, sessionid) {
+          if (success) {
+            console.log('sessionid：' + sessionid);
+            yunba.subscribe({
+                'topic': topic
+              },
+              function(success, msg) {
+                if (success) {
+                  console.log('subscribed');
+                  yunba.set_message_cb(function(data) {
+                    process_data(data);
+                  });
+                } else {
+                  console.log(msg);
+                }
+              }
+            );
+          } else {
+            console.log(msg);
+          }
+        });
+    }
+  });
+}
+
+create_demo();
+init_yunba();
+
+</script>
+</body>
 </html>
 
