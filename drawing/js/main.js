@@ -194,15 +194,6 @@ function onCanvasTouchStart(event) {
         window.addEventListener('touchmove', onCanvasTouchMove, false);
         window.addEventListener('touchend', onCanvasTouchEnd, false);
     } else if (event.touches.length == 2) {
-        // brush size
-        event.preventDefault();
-
-        brushSizeTouchReference = distance(event.touches[0], event.touches[1]);
-        brushSizeTouchStart = BRUSH_SIZE;
-
-        window.addEventListener('touchmove', onBrushSizeTouchMove, false);
-        window.addEventListener('touchend', onBrushSizeTouchEnd, false);
-    } else if (event.touches.length == 3) {
         // foreground color
         event.preventDefault();
 
@@ -211,10 +202,27 @@ function onCanvasTouchStart(event) {
 
         window.addEventListener('touchmove', onFGColorPickerTouchMove, false);
         window.addEventListener('touchend', onFGColorPickerTouchEnd, false);
+        // brush size
+        // event.preventDefault();
+
+        // brushSizeTouchReference = distance(event.touches[0], event.touches[1]);
+        // brushSizeTouchStart = BRUSH_SIZE;
+
+        // window.addEventListener('touchmove', onBrushSizeTouchMove, false);
+        // window.addEventListener('touchend', onBrushSizeTouchEnd, false);
+    } else if (event.touches.length == 3) {
+        // foreground color
+        // event.preventDefault();
+
+        // var loc = averageTouchPositions(event.touches);
+        // showFGColorPickerAtLocation(loc);
+
+        // window.addEventListener('touchmove', onFGColorPickerTouchMove, false);
+        // window.addEventListener('touchend', onFGColorPickerTouchEnd, false);
     } else if (event.touches.length == 4) {
         // reset brush
-        event.preventDefault();
-        window.addEventListener('touchend', onResetBrushTouchEnd, false);
+        // event.preventDefault();
+        // window.addEventListener('touchend', onResetBrushTouchEnd, false);
     }
 }
 
