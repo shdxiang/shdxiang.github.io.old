@@ -14,8 +14,6 @@ function Palette()
     context = canvas.getContext("2d");
     context.lineWidth = 1;
 
-    // http://www.boostworthy.com/blog/?p=226
-
     for(i = 0; i < count; i++)
     {
         angle = i / countDiv360 * degreesToRadians;

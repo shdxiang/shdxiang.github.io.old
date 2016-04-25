@@ -1,5 +1,5 @@
 const REV = 6,
-    BRUSHES = ["web", "sketchy", "shaded", "simple", "chrome", "fur", "longfur", "squares", "ribbon", "circles", "grid"],
+    BRUSHES = ["simple", "web", "sketchy", "shaded", "chrome", "fur", "longfur", "squares", "ribbon", "circles", "grid"],
     USER_AGENT = navigator.userAgent.toLowerCase();
 
 var SCREEN_WIDTH = window.innerWidth,
@@ -14,7 +14,6 @@ var SCREEN_WIDTH = window.innerWidth,
     i,
     mouseX = 0,
     mouseY = 0,
-    container,
     foregroundColorSelector,
     menu,
     canvas,
@@ -33,8 +32,6 @@ function init() {
     if (USER_AGENT.search("android") > -1 || USER_AGENT.search("iphone") > -1)
         BRUSH_SIZE = 2;
 
-    container = document.getElementById('dcv')
-
     canvas = document.getElementById("cv");
     canvas.width = $('#dcv').width();
     canvas.height = $('#dcv').height();
@@ -44,8 +41,6 @@ function init() {
 
     foregroundColorSelector = new ColorSelector(palette);
     foregroundColorSelector.addEventListener('change', onForegroundColorSelectorChange, false);
-    container.appendChild(foregroundColorSelector.container);
-
     
     context = canvas.getContext("2d");
 
@@ -113,9 +108,9 @@ function onForegroundColorSelectorChange(event) {
 function onMenuForegroundColor() {
     cleanPopUps();
 
+    foregroundColorSelector.container.style.left = (($('#dcv').width() - foregroundColorSelector.container.offsetWidth) / 2) + 'px';
+    foregroundColorSelector.container.style.top = (($('#dcv').height() - foregroundColorSelector.container.offsetHeight) / 4) + 'px';
     foregroundColorSelector.show();
-    foregroundColorSelector.container.style.left = ((SCREEN_WIDTH - foregroundColorSelector.container.offsetWidth) / 2) + 'px';
-    foregroundColorSelector.container.style.top = ((SCREEN_HEIGHT - foregroundColorSelector.container.offsetHeight) / 2) + 'px';
 
     isFgColorSelectorVisible = true;
 }
@@ -126,8 +121,6 @@ function onMenuSelectorChange() {
 
     brush.destroy();
     brush = eval("new " + BRUSHES[menu.selector.selectedIndex] + "(context)");
-
-    window.location.hash = BRUSHES[menu.selector.selectedIndex];
 }
 
 // CANVAS

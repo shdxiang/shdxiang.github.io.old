@@ -6,11 +6,9 @@ function ColorSelector( gradient )
 ColorSelector.prototype =
 {
     container: null,
-
-    gradientContainer: null,
     color: [0, 0, 0],
 
-    inputContainer: null,
+    inputcontainer: null,
     hueInput: null,
     saturationInput: null,
     luminosityInput: null,
@@ -29,22 +27,19 @@ ColorSelector.prototype =
     init: function(gradient)
     {
         var scope = this, context, hue, hueData;
+        var pickHue = 0;
 
-        this.container = document.createElement('div');
+        this.container = document.getElementById('palette');
         this.container.style.position = 'absolute';
+        this.container.style.left = '0px';
+        this.container.style.top = '0px';
         this.container.style.width = '250px';
         this.container.style.height = '250px';
+        this.container.style.cursor = 'pointer';
         this.container.style.visibility = 'hidden';
-
-        this.gradientContainer = document.createElement('div');
-        this.gradientContainer.style.position = 'absolute';
-        this.gradientContainer.style.left = '0px';
-        this.gradientContainer.style.top = '0px';
-        this.gradientContainer.style.width = '250px';
-        this.gradientContainer.style.height = '250px';
-        this.gradientContainer.style.cursor = 'pointer';
-        this.gradientContainer.addEventListener('mousedown', onMouseDown, false);
-        this.gradientContainer.addEventListener('touchstart', onTouchStart, false);
+        this.container.addEventListener('mousedown', onMouseDown, false);
+        this.container.addEventListener('mouseup', onMouseUp, false);
+        this.container.addEventListener('touchstart', onTouchStart, false);
 
         hue = document.createElement("canvas");
         hue.width = gradient.width;
@@ -55,7 +50,7 @@ ColorSelector.prototype =
 
         hueData = context.getImageData(0, 0, hue.width, hue.height).data;
 
-        this.gradientContainer.appendChild(hue);
+        this.container.appendChild(hue);
 
         this.luminosity = document.createElement("canvas");
         this.luminosity.style.position = 'absolute';
@@ -64,7 +59,7 @@ ColorSelector.prototype =
         this.luminosity.width = 250;
         this.luminosity.height = 250;
 
-        this.gradientContainer.appendChild(this.luminosity);
+        this.container.appendChild(this.luminosity);
 
         this.hueSelector = document.createElement("canvas");
         this.hueSelector.style.position = 'absolute';
@@ -84,7 +79,7 @@ ColorSelector.prototype =
         context.arc(7, 7, 6, 0, Math.PI * 2, true);
         context.stroke();
 
-        this.gradientContainer.appendChild( this.hueSelector );
+        this.container.appendChild( this.hueSelector );
 
         this.luminosityPosition = [ (gradient.width - 15), (gradient.height - 15) / 2 ];
 
@@ -95,12 +90,10 @@ ColorSelector.prototype =
         this.luminositySelector.width = 15;
         this.luminositySelector.height = 15;
 
-        this.container.appendChild(this.gradientContainer);
-
         context = this.luminositySelector.getContext("2d");
         context.drawImage(this.hueSelector, 0, 0, this.luminositySelector.width, this.luminositySelector.height);
 
-        this.gradientContainer.appendChild(this.luminositySelector);
+        this.container.appendChild(this.luminositySelector);
 
         this.dispatcher = document.createElement('div'); // this could be better handled...
 
@@ -109,23 +102,22 @@ ColorSelector.prototype =
 
         function onMouseDown( event )
         {
-            window.addEventListener('mousemove', onMouseMove, false);
-            window.addEventListener('mouseup', onMouseUp, false);
-
-            update( event.clientX - scope.container.offsetLeft, event.clientY - scope.container.offsetTop, true );
+            update( event.offsetX, event.offsetY, true );
         }
 
         function onMouseMove( event )
         {
-            update( event.clientX - scope.container.offsetLeft, event.clientY - scope.container.offsetTop, false );
+            update( event.offsetX, event.offsetY, false );
         }
 
         function onMouseUp( event )
         {
-            window.removeEventListener('mousemove', onMouseMove, false);
-            window.removeEventListener('mouseup', onMouseUp, false);
-
-            update( event.clientX - scope.container.offsetLeft, event.clientY - scope.container.offsetTop, false );
+            if (pickHue == 1) {
+                update( event.offsetX + scope.hueSelector.offsetLeft, event.offsetY + scope.hueSelector.offsetTop, false );
+            } else if (pickHue == 2) {
+                update( event.offsetX + scope.luminositySelector.offsetLeft, event.offsetY + scope.luminositySelector.offsetTop, false );
+            }
+            
         }
 
         function onTouchStart( event )
@@ -174,7 +166,6 @@ ColorSelector.prototype =
                 scope.areaDelta = d;
             }
 
-            var pickHue = 0;
             if (scope.areaDelta < 90) {
                 pickHue = 1;
             } else if (scope.areaDelta > 100) {
