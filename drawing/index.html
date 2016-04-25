@@ -15,6 +15,25 @@
       text-align: center;
     }
   </style>
+    <script src="https://cdn.bootcss.com/socket.io/1.4.5/socket.io.js"></script>
+    <script src="https://rawgit.com/yunba/yunba-javascript-sdk/master/yunba-js-sdk.js"></script>
+    <script src="http://cdn.bootcss.com/jquery/2.2.1/jquery.min.js"></script>
+
+    <script type="text/javascript" src="js/brushes/circles.js"></script>
+    <script type="text/javascript" src="js/brushes/chrome.js"></script>
+    <script type="text/javascript" src="js/brushes/fur.js"></script>
+    <script type="text/javascript" src="js/brushes/grid.js"></script>
+    <script type="text/javascript" src="js/brushes/longfur.js"></script>
+    <script type="text/javascript" src="js/brushes/ribbon.js"></script>
+    <script type="text/javascript" src="js/brushes/shaded.js"></script>
+    <script type="text/javascript" src="js/brushes/simple.js"></script>
+    <script type="text/javascript" src="js/brushes/sketchy.js"></script>
+    <script type="text/javascript" src="js/brushes/squares.js"></script>
+    <script type="text/javascript" src="js/brushes/web.js"></script>
+    <script type="text/javascript" src="js/colorutils.js"></script>
+    <script type="text/javascript" src="js/colorselector.js"></script>
+    <script type="text/javascript" src="js/palette.js"></script>
+    <script type="text/javascript" src="js/menu.js"></script>
 </head>
 <body>
   <div class="container-fluid">
@@ -46,18 +65,19 @@
     </div>
     <div class="row">
       <div class="col-md-2 col-sm-0"></div>
-      <div class="col-md-1 col-sm-3">
+      <div class="col-md-1 col-sm-2">
         画笔颜色：
       </div>
-      <div class="col-md-1 col-sm-3">
+      <div class="col-md-1 col-sm-2">
         <canvas id="brush-color"></canvas>
       </div>
-      <div class="col-md-1 col-sm-3">
+      <div class="col-md-1 col-sm-2">
         画笔形状：
       </div>
-      <div class="col-md-7 col-sm-3">
+      <div class="col-md-1 col-sm-2">
         <select id="brush-type"></select>
       </div>
+      <div class="col-md-6 col-sm-6"></div>
     </div>
     <div class="row">
       <div class="col-md-2 col-sm-0"></div>
@@ -69,25 +89,7 @@
       <div class="col-md-2 col-sm-0"></div>
     </div>
   </div>
-    <script src="https://cdn.bootcss.com/socket.io/1.4.5/socket.io.js"></script>
-    <script src="https://rawgit.com/yunba/yunba-javascript-sdk/master/yunba-js-sdk.js"></script>
-    <script src="http://cdn.bootcss.com/jquery/2.2.1/jquery.min.js"></script>
 
-    <script type="text/javascript" src="js/brushes/circles.js"></script>
-    <script type="text/javascript" src="js/brushes/chrome.js"></script>
-    <script type="text/javascript" src="js/brushes/fur.js"></script>
-    <script type="text/javascript" src="js/brushes/grid.js"></script>
-    <script type="text/javascript" src="js/brushes/longfur.js"></script>
-    <script type="text/javascript" src="js/brushes/ribbon.js"></script>
-    <script type="text/javascript" src="js/brushes/shaded.js"></script>
-    <script type="text/javascript" src="js/brushes/simple.js"></script>
-    <script type="text/javascript" src="js/brushes/sketchy.js"></script>
-    <script type="text/javascript" src="js/brushes/squares.js"></script>
-    <script type="text/javascript" src="js/brushes/web.js"></script>
-    <script type="text/javascript" src="js/colorutils.js"></script>
-    <script type="text/javascript" src="js/colorselector.js"></script>
-    <script type="text/javascript" src="js/palette.js"></script>
-    <script type="text/javascript" src="js/menu.js"></script>
     <script type="text/javascript" src="js/main.js"></script>
 </body>
 </html>

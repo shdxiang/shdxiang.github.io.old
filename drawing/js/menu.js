@@ -11,19 +11,12 @@ Menu.prototype =
 
     init: function()
     {
-        function newColorWell(width, height, identifier)
-        {
-            var well = document.getElementById("brush-color");
-            well.style.cursor = 'pointer';
-            well.width = width;
-            well.height = height;
-            return well;
-        }
+        var option;
 
-        var option, space, separator, color_width = 48, color_height = 20;
-
-
-        this.foregroundColor = newColorWell(color_width, color_height, 'fg-color');
+        this.foregroundColor = document.getElementById("brush-color");
+        this.foregroundColor.style.cursor = 'pointer';
+        this.foregroundColor.width = 48;
+        this.foregroundColor.height = 20;
 
         this.setForegroundColor( COLOR );
 
@@ -41,5 +34,5 @@ Menu.prototype =
     setForegroundColor: function( color )
     {
         this.foregroundColor.style.backgroundColor = 'rgb(' + color[0] + ', ' + color[1] +', ' + color[2] + ')';
-    },
+    }
 }

@@ -28,7 +28,7 @@ var SCREEN_WIDTH = window.innerWidth,
 init();
 
 function init() {
-    var hash, palette, embed;
+    var palette, embed;
 
     if (USER_AGENT.search("android") > -1 || USER_AGENT.search("iphone") > -1)
         BRUSH_SIZE = 2;
@@ -46,51 +46,31 @@ function init() {
     foregroundColorSelector.addEventListener('change', onForegroundColorSelectorChange, false);
     container.appendChild(foregroundColorSelector.container);
 
+    
+    context = canvas.getContext("2d");
+
     menu = new Menu();
 
     menu.foregroundColor.addEventListener('click', onMenuForegroundColor, false);
     menu.selector.addEventListener('change', onMenuSelectorChange, false);
-    context = canvas.getContext("2d");
-
     foregroundColorSelector.setColor(COLOR);
 
-    if (window.location.hash) {
-        hash = window.location.hash.substr(1, window.location.hash.length);
-
-        for (i = 0; i < BRUSHES.length; i++) {
-            if (hash == BRUSHES[i]) {
-                brush = eval("new " + BRUSHES[i] + "(context)");
-                menu.selector.selectedIndex = i;
-                break;
-            }
-        }
-    }
-
-    if (!brush) {
-        brush = eval("new " + BRUSHES[0] + "(context)");
-    }
+    brush = eval("new " + BRUSHES[0] + "(context)");
 
     window.addEventListener('mousemove', onWindowMouseMove, false);
     window.addEventListener('resize', onWindowResize, false);
-    document.addEventListener('mousedown', onDocumentMouseDown, false);
-    document.addEventListener('mouseout', onDocumentMouseOut, false);
-
-    document.addEventListener("dragenter", onDocumentDragEnter, false);
-    document.addEventListener("dragover", onDocumentDragOver, false);
-    document.addEventListener("drop", onDocumentDrop, false);
 
     canvas.addEventListener('mousedown', onCanvasMouseDown, false);
     canvas.addEventListener('touchstart', onCanvasTouchStart, false);
-
 }
 
 
 // WINDOW
 function onWindowResize() {
-    var imgData = context.getImageData(0,0,canvas.width,canvas.height);
+    var imgData = context.getImageData(0, 0, canvas.width, canvas.height);
     canvas.width = $('#dcv').width();
     canvas.height = $('#dcv').height();
-    context.putImageData(imgData,0,0);
+    context.putImageData(imgData, 0, 0);
 }
 
 function onWindowMouseMove(event) {
@@ -111,8 +91,7 @@ function isEventInColorSelector(cx, cy) {
     if (isFgColorSelectorVisible) {
         xLoc = foregroundColorSelector.container.offsetLeft + 250;
         yLoc = foregroundColorSelector.container.offsetTop;
-    } else {
-    }
+    } else {}
 
     xLoc = cx - xLoc;
     yLoc = cy - yLoc;
@@ -120,43 +99,6 @@ function isEventInColorSelector(cx, cy) {
     return (xLoc >= 0 && xLoc <= 150 &&
         yLoc >= 0 && yLoc <= 250);
 }
-
-function onDocumentMouseDown(event) {
-    if (!isMenuMouseOver && !isEventInColorSelector(event.clientX, event.clientY))
-        event.preventDefault();
-}
-
-function onDocumentMouseOut(event) {
-    onCanvasMouseUp();
-}
-
-function onDocumentDragEnter(event) {
-    event.stopPropagation();
-    event.preventDefault();
-}
-
-function onDocumentDragOver(event) {
-    event.stopPropagation();
-    event.preventDefault();
-}
-
-function onDocumentDrop(event) {
-    event.stopPropagation();
-    event.preventDefault();
-
-    var file = event.dataTransfer.files[0];
-
-    if (file.type.match(/image.*/)) {
-        /*
-         * TODO: This seems to work on Chromium. But not on Firefox.
-         * Better wait for proper FileAPI?
-         */
-
-        var fileString = event.dataTransfer.getData('text').split("\n");
-        document.body.style.backgroundImage = 'url(' + fileString[0] + ')';
-    }
-}
-
 
 // COLOR SELECTORS
 
@@ -179,7 +121,6 @@ function onMenuForegroundColor() {
 }
 
 function onMenuSelectorChange() {
-    console.log("change");
     if (BRUSHES[menu.selector.selectedIndex] == "")
         return;
 
