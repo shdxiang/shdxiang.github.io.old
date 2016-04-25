@@ -105,10 +105,10 @@ ColorSelector.prototype =
             var x, y;
             if (event.srcElement == scope.hueSelector) {
                 x = event.offsetX + scope.hueSelector.offsetLeft;
-                y = event.offsety + scope.hueSelector.offsetTop;
+                y = event.offsetY + scope.hueSelector.offsetTop;
             } else if (event.srcElement == scope.luminositySelector) {
                 x = event.offsetX + scope.luminositySelector.offsetLeft;
-                y = event.offsety + scope.luminositySelector.offsetTop;
+                y = event.offsetY + scope.luminositySelector.offsetTop;
             } else {
                 x = event.offsetX;
                 y = event.offsetY;
@@ -122,10 +122,10 @@ ColorSelector.prototype =
             var x, y;
             if (event.srcElement == scope.hueSelector) {
                 x = event.offsetX + scope.hueSelector.offsetLeft;
-                y = event.offsety + scope.hueSelector.offsetTop;
+                y = event.offsetY + scope.hueSelector.offsetTop;
             } else if (event.srcElement == scope.luminositySelector) {
                 x = event.offsetX + scope.luminositySelector.offsetLeft;
-                y = event.offsety + scope.luminositySelector.offsetTop;
+                y = event.offsetY + scope.luminositySelector.offsetTop;
             } else {
                 x = event.offsetX;
                 y = event.offsetY;
@@ -141,10 +141,10 @@ ColorSelector.prototype =
             var x, y;
             if (event.srcElement == scope.hueSelector) {
                 x = event.offsetX + scope.hueSelector.offsetLeft;
-                y = event.offsety + scope.hueSelector.offsetTop;
+                y = event.offsetY + scope.hueSelector.offsetTop;
             } else if (event.srcElement == scope.luminositySelector) {
                 x = event.offsetX + scope.luminositySelector.offsetLeft;
-                y = event.offsety + scope.luminositySelector.offsetTop;
+                y = event.offsetY + scope.luminositySelector.offsetTop;
             } else {
                 x = event.offsetX;
                 y = event.offsetY;
@@ -230,6 +230,7 @@ ColorSelector.prototype =
                 scope.hueSelector.style.left = (x - 7) + 'px';
                 scope.hueSelector.style.top = (y - 7) + 'px';
                 var index = (x + (y * 250)) * 4;
+                // console.log([ hueData[index], hueData[index + 1], hueData[index + 2] ]);
                 scope.updateLuminosity( [ hueData[index], hueData[index + 1], hueData[index + 2] ] );
             }
             else if (pickHue == 2)
