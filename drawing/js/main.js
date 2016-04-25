@@ -166,8 +166,8 @@ function averageTouchPositions(touches) {
 
     for (var i = 0; i < event.touches.length; ++i) {
         var touch = event.touches[i];
-        average[0] += touch.pageX;
-        average[1] += touch.pageY;
+        average[0] += touch.clientX;
+        average[1] += touch.clientY;
     }
     average[0] = average[0] / touches.length;
     average[1] = average[1] / touches.length;
@@ -176,8 +176,8 @@ function averageTouchPositions(touches) {
 }
 
 function distance(a, b) {
-    var dx = a.pageX - b.pageX;
-    var dy = a.pageY - b.pageY;
+    var dx = a.clientX - b.clientX;
+    var dy = a.clientY - b.clientY;
     return Math.sqrt(dx * dx + dy * dy);
 }
 
@@ -189,7 +189,7 @@ function onCanvasTouchStart(event) {
         // draw
         event.preventDefault();
 
-        brush.strokeStart(event.touches[0].pageX - canvas.offsetLeft, event.touches[0].pageY - canvas.offsetTop);
+        brush.strokeStart(event.touches[0].clientX - $('#cv').offset().left, event.touches[0].clientY - $('#cv').offset().top);
 
         window.addEventListener('touchmove', onCanvasTouchMove, false);
         window.addEventListener('touchend', onCanvasTouchEnd, false);
@@ -221,7 +221,7 @@ function onCanvasTouchStart(event) {
 function onCanvasTouchMove(event) {
     if (event.touches.length == 1) {
         event.preventDefault();
-        brush.stroke(event.touches[0].pageX - canvas.offsetLeft, event.touches[0].pageY - canvas.offsetTop);
+        brush.stroke(event.touches[0].clientX - $('#cv').offset().left, event.touches[0].clientY - $('#cv').offset().top);
     }
 }
 
