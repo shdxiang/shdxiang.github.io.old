@@ -7,7 +7,6 @@ var SCREEN_WIDTH = window.innerWidth,
     BRUSH_SIZE = 1,
     BRUSH_PRESSURE = 1,
     COLOR = [0, 0, 0],
-    BACKGROUND_COLOR = [250, 250, 250],
     brush,
     saveTimeOut,
     wacom,
@@ -24,7 +23,11 @@ var SCREEN_WIDTH = window.innerWidth,
     brushSizeTouchStart = 1,
     brushSizeTouchReference = 0.0;
 
-init();
+var topic = 'drawing',
+    yunba,
+    brush_name,
+    brush_stroke = [],
+    cid;
 
 function init() {
     var palette, embed;
@@ -41,7 +44,7 @@ function init() {
 
     foregroundColorSelector = new ColorSelector(palette);
     foregroundColorSelector.addEventListener('change', onForegroundColorSelectorChange, false);
-    
+
     context = canvas.getContext("2d");
 
     menu = new Menu();
@@ -51,6 +54,7 @@ function init() {
     foregroundColorSelector.setColor(COLOR);
 
     brush = eval("new " + BRUSHES[0] + "(context)");
+    brush_name = BRUSHES[0];
 
     window.addEventListener('mousemove', onWindowMouseMove, false);
     window.addEventListener('resize', onWindowResize, false);
@@ -121,6 +125,7 @@ function onMenuSelectorChange() {
 
     brush.destroy();
     brush = eval("new " + BRUSHES[menu.selector.selectedIndex] + "(context)");
+    brush_name = BRUSHES[menu.selector.selectedIndex];
 }
 
 // CANVAS
@@ -134,6 +139,8 @@ function onCanvasMouseDown(event) {
     BRUSH_PRESSURE = wacom && wacom.isWacom ? wacom.pressure : 1;
 
     brush.strokeStart(event.offsetX, event.offsetY);
+    push_stroke(event.offsetX, event.offsetY);
+
     canvas.addEventListener('mousemove', onCanvasMouseMove, false);
     canvas.addEventListener('mouseup', onCanvasMouseUp, false);
 }
@@ -141,10 +148,12 @@ function onCanvasMouseDown(event) {
 function onCanvasMouseMove(event) {
     BRUSH_PRESSURE = wacom && wacom.isWacom ? wacom.pressure : 1;
     brush.stroke(event.offsetX, event.offsetY);
+    push_stroke(event.offsetX, event.offsetY);
 }
 
 function onCanvasMouseUp() {
     brush.strokeEnd();
+    publish_draw();
 
     canvas.removeEventListener('mousemove', onCanvasMouseMove, false);
     canvas.removeEventListener('mouseup', onCanvasMouseUp, false);
@@ -189,7 +198,11 @@ function onCanvasTouchStart(event) {
         // draw
         event.preventDefault();
 
-        brush.strokeStart(event.touches[0].clientX - $('#cv').offset().left, event.touches[0].clientY - $('#cv').offset().top);
+        var x, y;
+        x = event.touches[0].clientX - $('#cv').offset().left;
+        y = event.touches[0].clientY - $('#cv').offset().top;
+        brush.strokeStart(x, y);
+        push_stroke(x, y);
 
         window.addEventListener('touchmove', onCanvasTouchMove, false);
         window.addEventListener('touchend', onCanvasTouchEnd, false);
@@ -202,34 +215,18 @@ function onCanvasTouchStart(event) {
 
         window.addEventListener('touchmove', onFGColorPickerTouchMove, false);
         window.addEventListener('touchend', onFGColorPickerTouchEnd, false);
-        // brush size
-        // event.preventDefault();
-
-        // brushSizeTouchReference = distance(event.touches[0], event.touches[1]);
-        // brushSizeTouchStart = BRUSH_SIZE;
-
-        // window.addEventListener('touchmove', onBrushSizeTouchMove, false);
-        // window.addEventListener('touchend', onBrushSizeTouchEnd, false);
-    } else if (event.touches.length == 3) {
-        // foreground color
-        // event.preventDefault();
-
-        // var loc = averageTouchPositions(event.touches);
-        // showFGColorPickerAtLocation(loc);
-
-        // window.addEventListener('touchmove', onFGColorPickerTouchMove, false);
-        // window.addEventListener('touchend', onFGColorPickerTouchEnd, false);
-    } else if (event.touches.length == 4) {
-        // reset brush
-        // event.preventDefault();
-        // window.addEventListener('touchend', onResetBrushTouchEnd, false);
     }
 }
 
 function onCanvasTouchMove(event) {
     if (event.touches.length == 1) {
         event.preventDefault();
-        brush.stroke(event.touches[0].clientX - $('#cv').offset().left, event.touches[0].clientY - $('#cv').offset().top);
+
+        var x, y;
+        x = event.touches[0].clientX - $('#cv').offset().left;
+        y = event.touches[0].clientY - $('#cv').offset().top;
+        brush.stroke(x, y);
+        push_stroke(x, y);
     }
 }
 
@@ -238,6 +235,7 @@ function onCanvasTouchEnd(event) {
         event.preventDefault();
 
         brush.strokeEnd();
+        publish_draw();
 
         window.removeEventListener('touchmove', onCanvasTouchMove, false);
         window.removeEventListener('touchend', onCanvasTouchEnd, false);
@@ -299,3 +297,90 @@ function cleanPopUps() {
         isFgColorSelectorVisible = false;
     }
 }
+
+function init_yunba() {
+    yunba = new Yunba({
+        server: 'sock.yunba.io',
+        port: 3000,
+        appkey: '5697113d4407a3cd028abead'
+    });
+
+    yunba.init(function(success) {
+        if (success) {
+            cid = Math.random().toString().substr(2);
+            console.log('cid: ' + cid);
+            yunba.connect_by_customid(cid,
+                function(success, msg, sessionid) {
+                    if (success) {
+                        console.log('sessionid：' + sessionid);
+                        yunba.subscribe({
+                                'topic': topic
+                            },
+                            function(success, msg) {
+                                if (success) {
+                                    console.log('subscribed');
+                                    yunba.set_message_cb(function(data) {
+                                        process_data(data);
+                                    });
+                                } else {
+                                    console.log(msg);
+                                }
+                            }
+                        );
+                    } else {
+                        console.log(msg);
+                    }
+                });
+        }
+    });
+}
+
+function process_data(data) {
+    // console.log(data);
+    var draw = JSON.parse(data.msg);
+    if (draw.cid == cid) {
+        return;
+    }
+
+    var orig_color = COLOR;
+    foregroundColorSelector.setColor(draw.color);
+    brs = eval("new " + draw.name + "(context)");
+    brs.strokeStart(draw.stroke[0][0], draw.stroke[0][1]);
+
+    for (var i = 1; i < draw.stroke.length; i++) {
+        brs.stroke(draw.stroke[i][0], draw.stroke[i][1]);
+    }
+    brs.strokeEnd();
+
+    COLOR = orig_color;
+    foregroundColorSelector.setColor(COLOR);
+    brs.destroy();
+}
+
+function publish_draw() {
+    var draw = {
+        cid: cid,
+        name: brush_name,
+        color: COLOR,
+        stroke: brush_stroke
+    }
+    // console.log(JSON.stringify(stroke))
+    yunba.publish({
+            topic: topic,
+            msg: JSON.stringify(draw)
+        },
+        function(success, msg) {
+            if (!success) {
+                console.log(msg);
+            }
+        }
+    );
+    brush_stroke = [];
+}
+
+function push_stroke(x, y) {
+    brush_stroke.push([Math.round(x), Math.round(y)]);
+}
+
+init_yunba();
+init();
