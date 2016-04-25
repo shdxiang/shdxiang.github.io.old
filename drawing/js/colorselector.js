@@ -27,7 +27,6 @@ ColorSelector.prototype =
     init: function(gradient)
     {
         var scope = this, context, hue, hueData;
-        var pickHue = 0;
 
         this.container = document.getElementById('palette');
         this.container.style.position = 'absolute';
@@ -38,7 +37,6 @@ ColorSelector.prototype =
         this.container.style.cursor = 'pointer';
         this.container.style.visibility = 'hidden';
         this.container.addEventListener('mousedown', onMouseDown, false);
-        this.container.addEventListener('mouseup', onMouseUp, false);
         this.container.addEventListener('touchstart', onTouchStart, false);
 
         hue = document.createElement("canvas");
@@ -102,22 +100,57 @@ ColorSelector.prototype =
 
         function onMouseDown( event )
         {
-            update( event.offsetX, event.offsetY, true );
+            scope.container.addEventListener('mouseup', onMouseUp, false);
+            scope.container.addEventListener('mousemove', onMouseMove, false);
+            var x, y;
+            if (event.srcElement == scope.hueSelector) {
+                x = event.offsetX + scope.hueSelector.offsetLeft;
+                y = event.offsety + scope.hueSelector.offsetTop;
+            } else if (event.srcElement == scope.luminositySelector) {
+                x = event.offsetX + scope.luminositySelector.offsetLeft;
+                y = event.offsety + scope.luminositySelector.offsetTop;
+            } else {
+                x = event.offsetX;
+                y = event.offsetY;
+            }
+            
+            update(x, y, true);
         }
 
         function onMouseMove( event )
         {
-            update( event.offsetX, event.offsetY, false );
+            var x, y;
+            if (event.srcElement == scope.hueSelector) {
+                x = event.offsetX + scope.hueSelector.offsetLeft;
+                y = event.offsety + scope.hueSelector.offsetTop;
+            } else if (event.srcElement == scope.luminositySelector) {
+                x = event.offsetX + scope.luminositySelector.offsetLeft;
+                y = event.offsety + scope.luminositySelector.offsetTop;
+            } else {
+                x = event.offsetX;
+                y = event.offsetY;
+            }
+            
+            update(x, y, false);
         }
 
         function onMouseUp( event )
         {
-            if (pickHue == 1) {
-                update( event.offsetX + scope.hueSelector.offsetLeft, event.offsetY + scope.hueSelector.offsetTop, false );
-            } else if (pickHue == 2) {
-                update( event.offsetX + scope.luminositySelector.offsetLeft, event.offsetY + scope.luminositySelector.offsetTop, false );
+            scope.container.removeEventListener('mousemove', onMouseMove, false);
+            scope.container.removeEventListener('mouseup', onMouseUp, false);
+            var x, y;
+            if (event.srcElement == scope.hueSelector) {
+                x = event.offsetX + scope.hueSelector.offsetLeft;
+                y = event.offsety + scope.hueSelector.offsetTop;
+            } else if (event.srcElement == scope.luminositySelector) {
+                x = event.offsetX + scope.luminositySelector.offsetLeft;
+                y = event.offsety + scope.luminositySelector.offsetTop;
+            } else {
+                x = event.offsetX;
+                y = event.offsetY;
             }
             
+            update(x, y, false);
         }
 
         function onTouchStart( event )
@@ -126,10 +159,15 @@ ColorSelector.prototype =
             {
                 event.preventDefault();
 
-                window.addEventListener('touchmove', onTouchMove, false);
-                window.addEventListener('touchend', onTouchEnd, false);
+                scope.container.addEventListener('touchmove', onTouchMove, false);
+                scope.container.addEventListener('touchend', onTouchEnd, false);
 
-                update( event.touches[0].pageX - scope.container.offsetLeft, event.touches[0].pageY - scope.container.offsetTop, true );
+                var x, y;
+
+                x = event.touches[0].clientX - $('#palette').offset().left;
+                y = event.touches[0].clientY - $('#palette').offset().top;
+                
+                update(x, y, true);
             }
         }
 
@@ -138,8 +176,11 @@ ColorSelector.prototype =
             if(event.touches.length == 1)
             {
                 event.preventDefault();
-
-                update( event.touches[0].pageX - scope.container.offsetLeft, event.touches[0].pageY - scope.container.offsetTop, false );
+                var x, y;
+                x = event.touches[0].clientX - $('#palette').offset().left;
+                y = event.touches[0].clientY - $('#palette').offset().top;
+                
+                update(x, y, false);
             }
         }
 
@@ -149,14 +190,16 @@ ColorSelector.prototype =
             {
                 event.preventDefault();
 
-                window.removeEventListener('touchmove', onTouchMove, false);
-                window.removeEventListener('touchend', onTouchEnd, false);
+                scope.container.removeEventListener('touchmove', onTouchMove, false);
+                scope.container.removeEventListener('touchend', onTouchEnd, false);
             }
         }
 
         function update(x, y, began)
         {
+            // console.log('update:' + x + ' ' + y);
             var dx, dy, d, nx, ny;
+            var pickHue = 0;
 
             dx = x - 125;
             dy = y - 125;
