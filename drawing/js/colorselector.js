@@ -32,7 +32,7 @@ ColorSelector.prototype =
 
         this.container = document.createElement('div');
         this.container.style.position = 'absolute';
-        this.container.style.width = '400px';
+        this.container.style.width = '250px';
         this.container.style.height = '250px';
         this.container.style.visibility = 'hidden';
 
@@ -95,57 +95,6 @@ ColorSelector.prototype =
         this.luminositySelector.width = 15;
         this.luminositySelector.height = 15;
 
-        this.inputContainer = document.createElement("div");
-        this.inputContainer.readOnly = false;
-        this.inputContainer.style.width = "128px";
-        this.inputContainer.style.height = "250px";
-        this.inputContainer.style.left = '272px';
-        this.inputContainer.style.top = '0px';
-        this.inputContainer.style.position = 'absolute';
-
-        var label = document.createElement("label");
-        label.htmlFor = "hueInput";
-        label.textContent = " Hue";
-
-        this.hueInput = document.createElement("input");
-        this.hueInput.type = "text";
-        this.hueInput.id = "hueInput";
-        this.hueInput.defaultValue = 0;
-        this.hueInput.size = 9;
-        this.hueInput.maxLength = 3;
-        this.hueInput.style.width = '48px';
-        this.inputContainer.appendChild(this.hueInput);
-        this.inputContainer.appendChild(label);
-
-        label = document.createElement("label");
-        label.htmlFor = "saturationInput";
-        label.textContent = " Saturation";
-
-        this.saturationInput = document.createElement("input");
-        this.saturationInput.type = "text";
-        this.saturationInput.id = "saturationInput";
-        this.saturationInput.defaultValue = 0;
-        this.saturationInput.size = 9;
-        this.saturationInput.maxLength = 3;
-        this.saturationInput.style.width = '48px';
-        this.inputContainer.appendChild(this.saturationInput);
-        this.inputContainer.appendChild(label);
-
-        label = document.createElement("label");
-        label.htmlFor = "luminosityInput";
-        label.textContent = " Luminosity";
-
-        this.luminosityInput = document.createElement("input");
-        this.luminosityInput.type = "text";
-        this.luminosityInput.id = "luminosityInput";
-        this.luminosityInput.defaultValue = 0;
-        this.luminosityInput.size = 9;
-        this.luminosityInput.maxLength = 3;
-        this.luminosityInput.style.width = '48px';
-        this.inputContainer.appendChild(this.luminosityInput);
-        this.inputContainer.appendChild(label);
-
-        this.container.appendChild(this.inputContainer);
         this.container.appendChild(this.gradientContainer);
 
         context = this.luminositySelector.getContext("2d");
@@ -157,8 +106,6 @@ ColorSelector.prototype =
 
         this.changeEvent = document.createEvent('Events');
         this.changeEvent.initEvent('change', true, true);
-
-        //
 
         function onMouseDown( event )
         {
@@ -213,50 +160,6 @@ ColorSelector.prototype =
                 window.removeEventListener('touchmove', onTouchMove, false);
                 window.removeEventListener('touchend', onTouchEnd, false);
             }
-        }
-
-        //
-
-        function updateColorInputs()
-        {
-            var hsv = [0,0,0];
-            var r=scope.color[0], g=scope.color[1], b=scope.color[2];
-            var mn, mx, dif, ad, dv, md;
-            mn = Math.min(r, g, b);
-            mx = Math.max(r, g, b);
-            if (r > g && r > b) {
-                dif = g - b;
-                ad = 0;
-            } else if (g > b) {
-                dif = b - r;
-                ad = 120;
-            } else {
-                dif = r - g;
-                ad = 240;
-            }
-
-            md = mx - mn;
-            var mdt = 0;
-            if (md != 0) {
-                mdt = 1.0 / md;
-            }
-
-            var mxt = 0;
-            if (mx != 0) {
-                mxt = 1.0 / mx;
-            }
-
-
-            hsv[0] = 60 * (dif * mdt) + ad;
-            if (hsv[0] < 0) {
-                hsv[0] = 360 + hsv[0];
-            }
-            hsv[1] = md * mxt;
-            hsv[2] = mx;
-
-            scope.hueInput.value = Math.floor(hsv[0]);
-            scope.saturationInput.value = Math.floor(hsv[1] * 100);
-            scope.luminosityInput.value = Math.floor(hsv[2] / 2.56);
         }
 
         function update(x, y, began)
@@ -314,14 +217,9 @@ ColorSelector.prototype =
             scope.color[1] = scope.luminosityData[(x + (y * 250)) * 4 + 1];
             scope.color[2] = scope.luminosityData[(x + (y * 250)) * 4 + 2];
 
-            updateColorInputs();
-
             scope.dispatchEvent( scope.changeEvent );
         }
     },
-
-
-    //
 
     show: function()
     {

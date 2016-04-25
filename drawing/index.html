@@ -5,10 +5,11 @@
   <meta http-equiv=Content-Type content="text/html;charset=utf-8">
   <link rel="stylesheet" href="http://cdn.bootcss.com/bootstrap/3.3.6/css/bootstrap.min.css">
   <style type="text/css">
-    #container {
+    #dcv {
       background: #DDDDDD;
       border-radius: 3px;
       height: 640px;
+      width: 100%;
     }
     .center {
       text-align: center;
@@ -39,7 +40,31 @@
     <div class="row">
       <div class="col-md-2 col-sm-0"></div>
       <div class="col-md-8 col-sm-12">
-        <div id="container"></div>
+        <div id=""></div>
+      </div>
+      <div class="col-md-2 col-sm-0"></div>
+    </div>
+    <div class="row">
+      <div class="col-md-2 col-sm-0"></div>
+      <div class="col-md-1 col-sm-3">
+        画笔颜色：
+      </div>
+      <div class="col-md-1 col-sm-3">
+        <canvas id="brush-color"></canvas>
+      </div>
+      <div class="col-md-1 col-sm-3">
+        画笔形状：
+      </div>
+      <div class="col-md-7 col-sm-3">
+        <select id="brush-type"></select>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-2 col-sm-0"></div>
+      <div class="col-md-8 col-sm-12">
+        <div id="dcv">
+          <canvas id="cv"></canvas>
+        </div>
       </div>
       <div class="col-md-2 col-sm-0"></div>
     </div>
