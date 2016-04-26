@@ -1,5 +1,6 @@
 const REV = 6,
-    BRUSHES = ["simple", "web", "sketchy", "shaded", "chrome", "fur", "longfur", "squares", "ribbon", "circles", "grid"],
+    BRUSHES = ["simple", "web", "sketchy", "shaded", "chrome", "fur", "longfur", "squares", "circles"],
+    BRUSHE_NAMES = ["铅笔", "网状", "速写", "阴影", "铬状", "短毛", "长毛", "矩形", "圆形"],
     USER_AGENT = navigator.userAgent.toLowerCase();
 
 var SCREEN_WIDTH = window.innerWidth,
@@ -337,7 +338,7 @@ function init_yunba() {
 }
 
 function process_data(data) {
-    // console.log(data);
+    console.log(data);
     var draw = JSON.parse(data.msg);
     if (draw.cid == cid) {
         return;
