@@ -309,7 +309,7 @@ function init_yunba() {
     yunba = new Yunba({
         server: 'sock.yunba.io',
         port: 3000,
-        appkey: '5697113d4407a3cd028abead'
+        appkey: '56a0a88c4407a3cd028ac2fe'
     });
 
     yunba.init(function(success) {
@@ -350,6 +350,8 @@ function init_yunba() {
 
 function process_data(data) {
     // console.log(data);
+    // var d = new Date();
+    // console.log(d.getTime());
     var draw = JSON.parse(data.msg);
     if (draw.cid == cid) {
         return;
@@ -371,13 +373,15 @@ function process_data(data) {
 }
 
 function publish_draw() {
+    // var d = new Date();
+    // console.log(d.getTime());
     var draw = {
             cid: cid,
             name: brush_name,
             color: COLOR,
             stroke: brush_stroke
         }
-        // console.log(JSON.stringify(stroke))
+    // console.log(JSON.stringify(draw));
     yunba.publish({
             topic: topic,
             msg: JSON.stringify(draw)
