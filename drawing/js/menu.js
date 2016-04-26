@@ -17,6 +17,7 @@ Menu.prototype =
         this.foregroundColor.style.cursor = 'pointer';
         this.foregroundColor.width = 48;
         this.foregroundColor.height = 20;
+        this.foregroundColor.style.visibility = 'visible';
 
         this.setForegroundColor( COLOR );
 

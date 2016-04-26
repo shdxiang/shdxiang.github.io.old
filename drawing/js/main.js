@@ -35,7 +35,7 @@ function init() {
     var palette, embed;
 
     if (USER_AGENT.search("android") > -1 || USER_AGENT.search("iphone") > -1)
-        BRUSH_SIZE = 2;
+        BRUSH_SIZE = 4;
 
     canvas = document.getElementById("cv");
     canvas.width = $('#dcv').width();
@@ -326,7 +326,7 @@ function init_yunba() {
                             function(success, msg) {
                                 if (success) {
                                     console.log('subscribed');
-                                    msg_notify('success', '与服务器连接成功');
+                                    msg_notify('success', '与服务器连接成功~');
                                     yunba.set_message_cb(function(data) {
                                         process_data(data);
                                     });
@@ -399,10 +399,12 @@ function msg_notify(type, msg) {
     Messenger().post({
         message: msg,
         type: type,
-        hideAfter: 3,
+        hideAfter: 2,
         // showCloseButton: true
     });
 }
 
-init_yunba();
-init();
+$(document).ready(function() {
+    init_yunba();
+    init();
+});

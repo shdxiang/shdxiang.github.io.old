@@ -4,6 +4,8 @@
   <title>Particles</title>
   <meta http-equiv=Content-Type content="text/html;charset=utf-8">
   <link rel="stylesheet" href="http://cdn.bootcss.com/bootstrap/3.3.6/css/bootstrap.min.css">
+  <link rel="stylesheet" href="css/messenger.css">
+  <link rel="stylesheet" href="css/messenger-theme-flat.css">
   <style type="text/css">
     #cv {
       background: #DDDDDD;
@@ -49,11 +51,11 @@
   <script src="https://cdn.bootcss.com/socket.io/1.4.5/socket.io.js"></script>
   <script src="https://rawgit.com/yunba/yunba-javascript-sdk/master/yunba-js-sdk.js"></script>
   <script src="http://cdn.bootcss.com/jquery/2.2.1/jquery.min.js"></script>
+  <script type="text/javascript" src="js/messenger.min.js"></script>
+  <script type="text/javascript" src="js/messenger-theme-flat.js"></script>
+
   <script src="js/sketch.js"></script>
   <script>
-// ----------------------------------------
-// Particle
-// ----------------------------------------
 
 function Particle(x, y, radius) {
   this.init(x, y, radius);
@@ -238,44 +240,66 @@ function process_data(data) {
 }
 
 function init_yunba() {
-  yunba = new Yunba({
-    server: 'sock.yunba.io',
-    port: 3000,
-    appkey: '5697113d4407a3cd028abead'
-  });
+    Messenger.options = {
+        extraClasses: 'messenger-fixed messenger-on-top',
+        theme: 'flat',
+    };
 
-  yunba.init(function(success) {
-    if (success) {
-      var cid = Math.random().toString().substr(2);
-      console.log('cid: ' + cid);
-      yunba.connect_by_customid(cid,
-        function(success, msg, sessionid) {
-          if (success) {
-            console.log('sessionid：' + sessionid);
-            yunba.subscribe({
-                'topic': topic
-              },
-              function(success, msg) {
-                if (success) {
-                  console.log('subscribed');
-                  yunba.set_message_cb(function(data) {
-                    process_data(data);
-                  });
-                } else {
-                  console.log(msg);
-                }
-              }
-            );
-          } else {
-            console.log(msg);
-          }
-        });
-    }
-  });
+    yunba = new Yunba({
+        server: 'sock.yunba.io',
+        port: 3000,
+        appkey: '5697113d4407a3cd028abead'
+    });
+
+    yunba.init(function(success) {
+        if (success) {
+            cid = Math.random().toString().substr(2);
+            console.log('cid: ' + cid);
+            yunba.connect_by_customid(cid,
+                function(success, msg, sessionid) {
+                    if (success) {
+                        console.log('sessionid：' + sessionid);
+                        yunba.subscribe({
+                                'topic': topic
+                            },
+                            function(success, msg) {
+                                if (success) {
+                                    console.log('subscribed');
+                                    msg_notify('success', '与服务器连接成功~');
+                                    yunba.set_message_cb(function(data) {
+                                        process_data(data);
+                                    });
+                                } else {
+                                    console.log(msg);
+                                    msg_notify('error', '订阅失败');
+                                }
+                            }
+                        );
+                    } else {
+                        console.log(msg);
+                        msg_notify('error', '与服务器连接失败，请检查网络');
+                    }
+                });
+        } else {
+            console.log('yunba init failed');
+            msg_notify('error', '初始化失败');
+        }
+    });
 }
 
-create_demo();
-init_yunba();
+function msg_notify(type, msg) {
+    Messenger().post({
+        message: msg,
+        type: type,
+        hideAfter: 2,
+        // showCloseButton: true
+    });
+}
+
+$(document).ready(function() {
+  create_demo();
+  init_yunba();
+});
 
 </script>
 </body>
