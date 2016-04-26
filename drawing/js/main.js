@@ -338,7 +338,7 @@ function init_yunba() {
 }
 
 function process_data(data) {
-    console.log(data);
+    // console.log(data);
     var draw = JSON.parse(data.msg);
     if (draw.cid == cid) {
         return;
