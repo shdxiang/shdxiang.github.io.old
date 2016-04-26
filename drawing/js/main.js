@@ -301,6 +301,11 @@ function cleanPopUps() {
 }
 
 function init_yunba() {
+    Messenger.options = {
+        extraClasses: 'messenger-fixed messenger-on-top',
+        theme: 'flat',
+    };
+
     yunba = new Yunba({
         server: 'sock.yunba.io',
         port: 3000,
@@ -321,18 +326,24 @@ function init_yunba() {
                             function(success, msg) {
                                 if (success) {
                                     console.log('subscribed');
+                                    msg_notify('success', '与服务器连接成功');
                                     yunba.set_message_cb(function(data) {
                                         process_data(data);
                                     });
                                 } else {
                                     console.log(msg);
+                                    msg_notify('error', '订阅失败');
                                 }
                             }
                         );
                     } else {
                         console.log(msg);
+                        msg_notify('error', '与服务器连接失败，请检查网络');
                     }
                 });
+        } else {
+            console.log('yunba init failed');
+            msg_notify('error', '初始化失败');
         }
     });
 }
@@ -361,12 +372,12 @@ function process_data(data) {
 
 function publish_draw() {
     var draw = {
-        cid: cid,
-        name: brush_name,
-        color: COLOR,
-        stroke: brush_stroke
-    }
-    // console.log(JSON.stringify(stroke))
+            cid: cid,
+            name: brush_name,
+            color: COLOR,
+            stroke: brush_stroke
+        }
+        // console.log(JSON.stringify(stroke))
     yunba.publish({
             topic: topic,
             msg: JSON.stringify(draw)
@@ -382,6 +393,15 @@ function publish_draw() {
 
 function push_stroke(x, y) {
     brush_stroke.push([Math.round(x), Math.round(y)]);
+}
+
+function msg_notify(type, msg) {
+    Messenger().post({
+        message: msg,
+        type: type,
+        hideAfter: 3,
+        // showCloseButton: true
+    });
 }
 
 init_yunba();
