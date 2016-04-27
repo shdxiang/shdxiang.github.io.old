@@ -68,6 +68,8 @@ function init() {
 
 // WINDOW
 function onWindowResize() {
+    SCREEN_WIDTH = window.innerWidth;
+    SCREEN_HEIGHT = window.innerHeight;
     var imgData = context.getImageData(0, 0, canvas.width, canvas.height);
     canvas.width = $('#dcv').width();
     canvas.height = $('#dcv').height();
@@ -76,8 +78,8 @@ function onWindowResize() {
 }
 
 function onWindowMouseMove(event) {
-    mouseX = event.pageX;
-    mouseY = event.pageY;
+    mouseX = event.clientX;
+    mouseY = event.clientY;
 }
 
 // DOCUMENT
@@ -163,8 +165,8 @@ function onCanvasMouseUp() {
 }
 
 function distance(a, b) {
-    var dx = a.pageX - b.pageX;
-    var dy = a.pageY - b.pageY;
+    var dx = a.clientX - b.clientX;
+    var dy = a.clientY - b.clientY;
     return Math.sqrt(dx * dx + dy * dy);
 }
 
