@@ -25,6 +25,12 @@
     .center {
       text-align: center;
     }
+    .nopaddingleft {
+      padding-left: 0px;
+    }
+    .nopaddingright {
+      padding-right: 0px;
+    }
   </style>
     <script src="https://cdn.bootcss.com/socket.io/1.4.5/socket.io.js"></script>
     <script src="https://rawgit.com/yunba/yunba-javascript-sdk/master/yunba-js-sdk.js"></script>
@@ -71,16 +77,16 @@
     </div>
     <div class="row">
       <div class="col-md-2 col-xs-0"></div>
-      <div class="col-md-1 col-xs-3">
+      <div class="col-md-1 col-xs-3 nopaddingright">
         画笔颜色：
       </div>
-      <div class="col-md-1 col-xs-3">
+      <div class="col-md-1 col-xs-3 nopaddingleft">
         <canvas id="brush-color"></canvas>
       </div>
-      <div class="col-md-1 col-xs-3">
+      <div class="col-md-1 col-xs-3 nopaddingright">
         画笔形状：
       </div>
-      <div class="col-md-1 col-xs-3">
+      <div class="col-md-1 col-xs-3 nopaddingleft">
         <select id="brush-type"></select>
       </div>
       <div class="col-md-6 col-xs-0"></div>
