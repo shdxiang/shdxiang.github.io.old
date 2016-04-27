@@ -165,8 +165,8 @@ function onCanvasMouseUp() {
 
 function showFGColorPickerAtLocation(loc) {
     foregroundColorSelector.show();
-    foregroundColorSelector.container.style.left = (loc[0] - (foregroundColorSelector.container.offsetWidth / 2)) + 'px';
-    foregroundColorSelector.container.style.top = (loc[1] - (foregroundColorSelector.container.offsetHeight / 2)) + 'px';
+    foregroundColorSelector.container.style.left = (loc[0] - $('#cv').offset().left - (foregroundColorSelector.container.offsetWidth / 2)) + 'px';
+    foregroundColorSelector.container.style.top = (loc[1] - $('#cv').offset().top - (foregroundColorSelector.container.offsetHeight / 2)) + 'px';
 
     isFgColorSelectorVisible = true;
 }
