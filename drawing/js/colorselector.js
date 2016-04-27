@@ -164,13 +164,9 @@ ColorSelector.prototype =
 
                 var x, y;
 
-                x = event.touches[0].clientX - $('#palette').position().left;
-                y = event.touches[0].clientY - $('#palette').position().top;
-                console.log(event.touches[0]);
-                console.log(event.touches[0].clientX + ' ' + event.touches[0].clientY);
-                console.log($('#palette').position());
-                console.log(x + ' ' + y);
-                
+                x = event.touches[0].pageX - $('#palette').offset().left;
+                y = event.touches[0].pageY - $('#palette').offset().top;
+  
                 update(x, y, true);
             }
         }
@@ -181,8 +177,8 @@ ColorSelector.prototype =
             {
                 event.preventDefault();
                 var x, y;
-                x = event.touches[0].clientX - $('#palette').position().left;
-                y = event.touches[0].clientY - $('#palette').position().top;
+                x = event.touches[0].pageX - $('#palette').offset().left;
+                y = event.touches[0].pageY - $('#palette').offset().top;
                 
                 update(x, y, false);
             }
