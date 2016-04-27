@@ -75,8 +75,8 @@ function onWindowResize() {
 }
 
 function onWindowMouseMove(event) {
-    mouseX = event.clientX;
-    mouseY = event.clientY;
+    mouseX = event.pageX;
+    mouseY = event.pageY;
 }
 
 // DOCUMENT
@@ -175,8 +175,8 @@ function averageTouchPositions(touches) {
 
     for (var i = 0; i < event.touches.length; ++i) {
         var touch = event.touches[i];
-        average[0] += touch.clientX;
-        average[1] += touch.clientY;
+        average[0] += touch.pageX;
+        average[1] += touch.pageY;
     }
     average[0] = average[0] / touches.length;
     average[1] = average[1] / touches.length;
@@ -185,8 +185,8 @@ function averageTouchPositions(touches) {
 }
 
 function distance(a, b) {
-    var dx = a.clientX - b.clientX;
-    var dy = a.clientY - b.clientY;
+    var dx = a.pageX - b.pageX;
+    var dy = a.pageY - b.pageY;
     return Math.sqrt(dx * dx + dy * dy);
 }
 
@@ -199,8 +199,8 @@ function onCanvasTouchStart(event) {
         event.preventDefault();
 
         var x, y;
-        x = event.touches[0].clientX - $('#cv').offset().left;
-        y = event.touches[0].clientY - $('#cv').offset().top;
+        x = event.touches[0].pageX - $('#cv').offset().left;
+        y = event.touches[0].pageY - $('#cv').offset().top;
         brush.strokeStart(x, y);
         push_stroke(x, y);
 
@@ -223,8 +223,8 @@ function onCanvasTouchMove(event) {
         event.preventDefault();
 
         var x, y;
-        x = event.touches[0].clientX - $('#cv').offset().left;
-        y = event.touches[0].clientY - $('#cv').offset().top;
+        x = event.touches[0].pageX - $('#cv').offset().left;
+        y = event.touches[0].pageY - $('#cv').offset().top;
         brush.stroke(x, y);
         push_stroke(x, y);
     }
