@@ -35,7 +35,7 @@ function init() {
     var palette, embed;
 
     //if (USER_AGENT.search("android") > -1 || USER_AGENT.search("iphone") > -1)
-        //BRUSH_SIZE = 2;
+    //BRUSH_SIZE = 2;
 
     canvas = document.getElementById("cv");
     canvas.width = $('#dcv').width();
@@ -72,6 +72,7 @@ function onWindowResize() {
     canvas.width = $('#dcv').width();
     canvas.height = $('#dcv').height();
     context.putImageData(imgData, 0, 0);
+    cleanPopUps();
 }
 
 function onWindowMouseMove(event) {
@@ -114,8 +115,9 @@ function onForegroundColorSelectorChange(event) {
 function onMenuForegroundColor() {
     cleanPopUps();
 
-    foregroundColorSelector.container.style.left = (($('#dcv').width() - foregroundColorSelector.container.offsetWidth) / 2) + 'px';
-    foregroundColorSelector.container.style.top = (($('#dcv').height() - foregroundColorSelector.container.offsetHeight) / 4) + 'px';
+    foregroundColorSelector.container.style.left = ((SCREEN_WIDTH - foregroundColorSelector.container.offsetWidth) / 2) + 'px';
+    foregroundColorSelector.container.style.top = ((SCREEN_HEIGHT - foregroundColorSelector.container.offsetHeight) / 4) + 'px';
+    console.log($('#dcv').width() + ' ' + foregroundColorSelector.container.offsetWidth + ' ' + foregroundColorSelector.container.Width);
     foregroundColorSelector.show();
 
     isFgColorSelectorVisible = true;
@@ -199,6 +201,7 @@ function onCanvasTouchStart(event) {
         event.preventDefault();
 
         var x, y;
+
         x = event.touches[0].pageX - $('#cv').offset().left;
         y = event.touches[0].pageY - $('#cv').offset().top;
         brush.strokeStart(x, y);
@@ -379,7 +382,7 @@ function publish_draw() {
             color: COLOR,
             stroke: brush_stroke
         }
-    // console.log(JSON.stringify(draw));
+        // console.log(JSON.stringify(draw));
     yunba.publish({
             topic: topic,
             msg: JSON.stringify(draw)
