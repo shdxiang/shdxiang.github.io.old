@@ -118,7 +118,7 @@ function onMenuForegroundColor() {
     cleanPopUps();
 
     foregroundColorSelector.container.style.left = ((SCREEN_WIDTH - foregroundColorSelector.container.offsetWidth) / 2) + 'px';
-    foregroundColorSelector.container.style.top = ((SCREEN_HEIGHT - foregroundColorSelector.container.offsetHeight) / 4) + 'px';
+    foregroundColorSelector.container.style.top = (($('#dcv').offset().top + 64)) + 'px';
     foregroundColorSelector.show();
 
     isFgColorSelectorVisible = true;

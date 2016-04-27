@@ -197,7 +197,7 @@ ColorSelector.prototype =
 
         function update(x, y, began)
         {
-            console.log('update:' + x + ' ' + y);
+            // console.log('update:' + x + ' ' + y);
             var dx, dy, d, nx, ny;
             var pickHue = 0;
 
@@ -230,8 +230,8 @@ ColorSelector.prototype =
                 scope.hueSelector.style.left = (x - 7) + 'px';
                 scope.hueSelector.style.top = (y - 7) + 'px';
                 var index = (x + (y * 250)) * 4;
-                console.log(index);
-                console.log([ hueData[index], hueData[index + 1], hueData[index + 2] ]);
+                // console.log(index);
+                // console.log([ hueData[index], hueData[index + 1], hueData[index + 2] ]);
                 scope.updateLuminosity( [ hueData[index], hueData[index + 1], hueData[index + 2] ] );
             }
             else if (pickHue == 2)
