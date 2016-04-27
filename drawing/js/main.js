@@ -34,8 +34,8 @@ var topic = 'drawing',
 function init() {
     var palette, embed;
 
-    if (USER_AGENT.search("android") > -1 || USER_AGENT.search("iphone") > -1)
-        BRUSH_SIZE = 4;
+    //if (USER_AGENT.search("android") > -1 || USER_AGENT.search("iphone") > -1)
+        //BRUSH_SIZE = 2;
 
     canvas = document.getElementById("cv");
     canvas.width = $('#dcv').width();
@@ -160,8 +160,6 @@ function onCanvasMouseUp() {
     canvas.removeEventListener('mousemove', onCanvasMouseMove, false);
     canvas.removeEventListener('mouseup', onCanvasMouseUp, false);
 }
-
-//
 
 function showFGColorPickerAtLocation(loc) {
     foregroundColorSelector.show();
@@ -332,18 +330,18 @@ function init_yunba() {
                                     });
                                 } else {
                                     console.log(msg);
-                                    msg_notify('error', '订阅失败');
+                                    msg_notify('error', msg);
                                 }
                             }
                         );
                     } else {
                         console.log(msg);
-                        msg_notify('error', '与服务器连接失败，请检查网络');
+                        msg_notify('error', msg);
                     }
                 });
         } else {
             console.log('yunba init failed');
-            msg_notify('error', '初始化失败');
+            msg_notify('error', '连接出错，请检查网络');
         }
     });
 }
