@@ -164,8 +164,8 @@ ColorSelector.prototype =
 
                 var x, y;
 
-                x = event.touches[0].clientX - $('#palette').offset().left;
-                y = event.touches[0].clientY - $('#palette').offset().top;
+                x = event.touches[0].pageX - $('#palette').offset().left;
+                y = event.touches[0].pageY - $('#palette').offset().top;
                 
                 update(x, y, true);
             }
@@ -177,8 +177,8 @@ ColorSelector.prototype =
             {
                 event.preventDefault();
                 var x, y;
-                x = event.touches[0].clientX - $('#palette').offset().left;
-                y = event.touches[0].clientY - $('#palette').offset().top;
+                x = event.touches[0].pageX - $('#palette').offset().left;
+                y = event.touches[0].pageY - $('#palette').offset().top;
                 
                 update(x, y, false);
             }
