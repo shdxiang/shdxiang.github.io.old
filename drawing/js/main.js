@@ -117,7 +117,6 @@ function onMenuForegroundColor() {
 
     foregroundColorSelector.container.style.left = ((SCREEN_WIDTH - foregroundColorSelector.container.offsetWidth) / 2) + 'px';
     foregroundColorSelector.container.style.top = ((SCREEN_HEIGHT - foregroundColorSelector.container.offsetHeight) / 4) + 'px';
-    console.log($('#dcv').width() + ' ' + foregroundColorSelector.container.offsetWidth + ' ' + foregroundColorSelector.container.Width);
     foregroundColorSelector.show();
 
     isFgColorSelectorVisible = true;
@@ -327,7 +326,7 @@ function init_yunba() {
                             function(success, msg) {
                                 if (success) {
                                     console.log('subscribed');
-                                    msg_notify('success', '与服务器连接成功~');
+                                    msg_notify('success', '连接服务器成功~');
                                     yunba.set_message_cb(function(data) {
                                         process_data(data);
                                     });
@@ -344,7 +343,7 @@ function init_yunba() {
                 });
         } else {
             console.log('yunba init failed');
-            msg_notify('error', '连接出错，请检查网络');
+            msg_notify('error', '连接出错，请尝试刷新~');
         }
     });
 }

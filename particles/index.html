@@ -267,7 +267,7 @@ function init_yunba() {
                             function(success, msg) {
                                 if (success) {
                                     console.log('subscribed');
-                                    msg_notify('success', '与服务器连接成功~');
+                                    msg_notify('success', '连接服务器成功~');
                                     yunba.set_message_cb(function(data) {
                                         process_data(data);
                                     });
@@ -284,7 +284,7 @@ function init_yunba() {
                 });
         } else {
             console.log('yunba init failed');
-            msg_notify('error', '连接出错，请检查网络');
+            msg_notify('error', '连接出错，请尝试刷新~');
         }
     });
 }
